@@ -5,7 +5,10 @@
 	email {$ACME_EMAIL}
 }
 
-{$DOMAIN} {
+# PUBLIC_ORIGIN sets the scheme + host:
+#   https://shop.example.com  -> automatic Let's Encrypt HTTPS
+#   http://94.156.115.108     -> plain HTTP on a bare IP (no cert)
+{$PUBLIC_ORIGIN} {
 	encode gzip zstd
 
 	# /api/* -> FastAPI backend (prefix stripped): /api/auth/login -> /auth/login

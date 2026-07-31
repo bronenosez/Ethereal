@@ -15,7 +15,8 @@ One `docker compose` stack: **PostgreSQL** + **FastAPI/Playwright backend** +
 ## Prerequisites
 
 - A Linux VPS (Ubuntu 22.04+), **2 GB RAM or more** (Chromium is memory-hungry).
-- A domain with an **A record pointing to the server IP**.
+- Either a domain with an **A record pointing to the server IP** (for HTTPS), or
+  just the IP (served over plain HTTP). Set this via `PUBLIC_ORIGIN` in `.env`.
 - Ports **80** and **443** open.
 - Docker + Compose plugin installed:
   ```bash
@@ -28,15 +29,16 @@ One `docker compose` stack: **PostgreSQL** + **FastAPI/Playwright backend** +
 git clone https://github.com/bronenosez/Ethereal.git
 cd Ethereal/deploy
 cp .env.example .env
-nano .env                       # set DOMAIN, ACME_EMAIL, passwords, SECRET_KEY
+nano .env                       # set PUBLIC_ORIGIN, passwords, SECRET_KEY
 docker compose up -d --build
 ```
 
-First build takes a few minutes (Playwright image + frontend build). Then:
+First build takes a few minutes (Playwright image + frontend build). Then (with
+`<ORIGIN>` = your `PUBLIC_ORIGIN`):
 
-- Site: `https://<DOMAIN>`
-- Admin: `https://<DOMAIN>/login` → sign in with `ADMIN_USERNAME` / `ADMIN_PASSWORD`
-- API health: `https://<DOMAIN>/api/health`
+- Site: `<ORIGIN>`
+- Admin: `<ORIGIN>/login` → sign in with `ADMIN_USERNAME` / `ADMIN_PASSWORD`
+- API health: `<ORIGIN>/api/health`
 
 The database and admin user are created automatically on first startup, and the
 demo catalogue is seeded if the products table is empty.
@@ -70,7 +72,8 @@ docker compose exec db pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB" > backup.sql
   example values (the repo's example key is public).
 - The DB port is not published to the host; it's only reachable inside the
   Compose network.
-- To change the domain later, edit `.env` and rebuild `web` (the API URL is
-  baked into the frontend at build time).
+- To change the origin/domain later, edit `PUBLIC_ORIGIN` in `.env` and rebuild
+  `web` (the API URL is baked into the frontend at build time):
+  `docker compose up -d --build web`.
 - If a parse request is killed for memory on a 1 GB box, resize to 2 GB+ or add
   swap.

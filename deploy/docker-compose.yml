@@ -36,11 +36,11 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile.web
       args:
-        VITE_API_URL: https://${DOMAIN}/api
-        VITE_SITE_URL: https://${DOMAIN}
+        VITE_API_URL: ${PUBLIC_ORIGIN}/api
+        VITE_SITE_URL: ${PUBLIC_ORIGIN}
     restart: unless-stopped
     environment:
-      DOMAIN: ${DOMAIN}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN}
       ACME_EMAIL: ${ACME_EMAIL}
     ports:
       - "80:80"
