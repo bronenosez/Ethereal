@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Keep the admin area out of search results
+Disallow: /admin
+Disallow: /login
+
+Sitemap: http://localhost:5173/sitemap.xml

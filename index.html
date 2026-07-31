@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary SEO (overridden per-route at runtime by <Seo>) -->
+    <title>Ethereal — Skincare, Makeup &amp; Body Care Delivered</title>
+    <meta name="description" content="Shop curated skincare, makeup and body & hair care from trusted global makers. Pure formulas, honest prices, shipped directly to your door." />
+    <meta name="keywords" content="cosmetics, skincare, makeup, body care, hair care, beauty, serums, online cosmetics store" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#4A44A8" />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%234A44A8'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' font-style='italic' fill='white' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ethereal" />
+    <meta property="og:title" content="Ethereal — Skincare, Makeup & Body Care Delivered" />
+    <meta property="og:description" content="Curated skincare, makeup and body & hair care from trusted global makers — shipped directly to your door." />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og-image.webp" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ru_RU" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ethereal — Skincare, Makeup & Body Care Delivered" />
+    <meta name="twitter:description" content="Curated skincare, makeup and body & hair care from trusted global makers — shipped directly to your door." />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/og-image.webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Organization + WebSite structured data (language-neutral) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Ethereal",
+          "url": "%VITE_SITE_URL%/",
+          "logo": "%VITE_SITE_URL%/og-image.webp",
+          "description": "Curated skincare, makeup and body & hair care shipped directly to your door."
+        },
+        {
+          "@type": "WebSite",
+          "name": "Ethereal",
+          "url": "%VITE_SITE_URL%/"
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
