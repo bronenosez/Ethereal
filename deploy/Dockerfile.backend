@@ -1,0 +1,14 @@
+# FastAPI + Playwright backend. The official Playwright Python image already
+# bundles Chromium and all its system libraries, so the parser works out of the
+# box. Keep the tag in sync with `playwright` in backend/requirements.txt.
+FROM mcr.microsoft.com/playwright/python:v1.49.1-jammy
+
+WORKDIR /app
+
+COPY backend/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend/ ./
+
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

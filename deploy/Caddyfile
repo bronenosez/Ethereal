@@ -1,0 +1,22 @@
+# Caddy serves the built SPA and proxies the API. It obtains and renews a
+# Let's Encrypt certificate automatically once DOMAIN resolves to this server
+# and ports 80/443 are open.
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode gzip zstd
+
+	# /api/* -> FastAPI backend (prefix stripped): /api/auth/login -> /auth/login
+	handle_path /api/* {
+		reverse_proxy backend:8000
+	}
+
+	# Everything else -> static SPA with history fallback
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

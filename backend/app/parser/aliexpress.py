@@ -198,7 +198,14 @@ def parse_products(html: str) -> list:
     return products
 
 
-def fetch_html(url: str, headless: bool = True, wait_ms: int = 4000) -> str:
+def _launch_args(no_sandbox: bool) -> list:
+    # Chromium refuses to run as root without --no-sandbox; --disable-dev-shm-usage
+    # avoids crashes in containers with a small /dev/shm.
+    return ["--no-sandbox", "--disable-dev-shm-usage"] if no_sandbox else []
+
+
+def fetch_html(url: str, headless: bool = True, wait_ms: int = 4000,
+               no_sandbox: bool = False) -> str:
     """
     Загрузить страницу выдачи через Playwright (нужен headless-браузер,
     т.к. AliExpress рендерит товары в JS и проверяет клиента).
@@ -210,7 +217,7 @@ def fetch_html(url: str, headless: bool = True, wait_ms: int = 4000) -> str:
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=headless)
+        browser = pw.chromium.launch(headless=headless, args=_launch_args(no_sandbox))
         context = browser.new_context(
             locale="ru-RU",
             user_agent=(
@@ -269,7 +276,8 @@ def extract_max_page(html: str) -> Optional[int]:
 
 
 def fetch_all_pages(url: str, max_pages: int = 5, start_page: int = 1,
-                    headless: bool = True, wait_ms: int = 4000) -> list:
+                    headless: bool = True, wait_ms: int = 4000,
+                    no_sandbox: bool = False) -> list:
     """
     Обойти несколько страниц выдачи в одном браузере и вернуть список
     Product со всех страниц (с дедупликацией по product_id+sku_id).
@@ -284,7 +292,7 @@ def fetch_all_pages(url: str, max_pages: int = 5, start_page: int = 1,
     all_products = []
     seen_keys = set()
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=headless)
+        browser = pw.chromium.launch(headless=headless, args=_launch_args(no_sandbox))
         context = browser.new_context(
             locale="ru-RU",
             user_agent=(
@@ -355,15 +363,16 @@ def _run_with_subprocess_loop(fn, *args, **kwargs):
     return box["result"]
 
 
-def _scrape_impl(url: str, pages: int, headless: bool) -> list[dict]:
+def _scrape_impl(url: str, pages: int, headless: bool, no_sandbox: bool) -> list[dict]:
     if pages > 1:
-        products = fetch_all_pages(url, max_pages=pages, start_page=1, headless=headless)
+        products = fetch_all_pages(url, max_pages=pages, start_page=1,
+                                   headless=headless, no_sandbox=no_sandbox)
     else:
-        products = parse_products(fetch_html(url, headless=headless))
+        products = parse_products(fetch_html(url, headless=headless, no_sandbox=no_sandbox))
     return [asdict(p) for p in products]
 
 
-def scrape(url: str, pages: int = 1, headless: bool = True) -> list[dict]:
+def scrape(url: str, pages: int = 1, headless: bool = True, no_sandbox: bool = False) -> list[dict]:
     """
     Высокоуровневый хелпер для API: вернуть список товаров (dict) с одной
     или нескольких страниц выдачи. `pages` — сколько страниц обойти, начиная
@@ -373,4 +382,4 @@ def scrape(url: str, pages: int = 1, headless: bool = True) -> list[dict]:
     поддерживающей подпроцессы (см. _run_with_subprocess_loop) — иначе под
     `uvicorn --reload` на Windows падает с NotImplementedError.
     """
-    return _run_with_subprocess_loop(_scrape_impl, url, pages, headless)
+    return _run_with_subprocess_loop(_scrape_impl, url, pages, headless, no_sandbox)

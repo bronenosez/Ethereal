@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     )
 
     parser_headless: bool = True
+    # In a container running as root, Chromium refuses to start without these.
+    # Set PARSER_NO_SANDBOX=true in Docker/production; keep false on a desktop.
+    parser_no_sandbox: bool = False
 
     @property
     def cors_origin_list(self) -> list[str]:
